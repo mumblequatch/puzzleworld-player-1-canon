@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puzzleworld: Player 1</title>
+    <style>
+@import url('https://cdn.jsdelivr.net/gh/fonts-archive/Charter/Charter.css');
+
+@font-face {
+    font-family: 'Atkinson Hyperlegible Next';
+    src: url(fonts/AtkinsonHyperlegibleNext-Regular.woff2) format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Atkinson Hyperlegible Next';
+    src: url(fonts/AtkinsonHyperlegibleNext-Bold.woff2) format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Atkinson Hyperlegible Next';
+    src: url(fonts/AtkinsonHyperlegibleNext-Italic.woff2) format('woff2');
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+}
+
+* { box-sizing: border-box; }
+html { font-size: 18px; }
+
+@media (max-width: 600px) {
+    html { font-size: 22px; }
+    body { padding: 2rem 0.75rem; }
+}
+
+body {
+    font-family: 'Atkinson Hyperlegible Next', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 1rem;
+    line-height: 1.4;
+    color: rgb(25, 25, 25);
+    background: rgb(247, 247, 247);
+    max-width: 38em;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: Charter, Georgia, 'Times New Roman', serif;
+    font-weight: bold;
+    line-height: 1.2;
+    margin-top: 1.5em;
+    margin-bottom: 0.625em;
+}
+
+h1 { font-size: 1.6rem; color: rgb(51, 51, 51); }
+h2 { font-size: 1.35rem; color: rgb(51, 51, 51); }
+h3 { font-size: 1.15rem; font-weight: bold; color: rgb(51, 51, 51); }
+
+p { margin: 0 0 1em 0; }
+
+blockquote {
+    margin: 1em 0;
+    padding-left: 1.5em;
+    border-left: 3px solid rgb(200, 200, 200);
+    color: rgb(85, 85, 85);
+}
+
+ul, ol { margin: 1em 0; padding-left: 1.5em; }
+li { margin-bottom: 0.3em; }
+
+a { color: rgb(25, 25, 25); text-decoration: underline; }
+a:hover { color: rgb(26, 195, 255); }
+
+code {
+    font-family: 'SF Mono', Consolas, monospace;
+    font-size: 0.85em;
+    background: rgb(235, 235, 235);
+    padding: 0.1em 0.3em;
+    border-radius: 3px;
+}
+
+pre {
+    background: rgb(235, 235, 235);
+    padding: 1em;
+    overflow-x: auto;
+    border-radius: 3px;
+}
+
+pre code { background: none; padding: 0; }
+
+hr { border: none; border-top: 1px solid rgb(200, 200, 200); margin: 2em 0; }
+
+table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+th, td { border: 1px solid rgb(200, 200, 200); padding: 0.5em; text-align: left; }
+th { background: rgb(235, 235, 235); }
+
+img { max-width: 100%; height: auto; }
+
+.title-block {
+    text-align: center;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0;
+    border-bottom: 1px solid rgb(200, 200, 200);
+}
+
+.title-block h1 { margin: 0 0 1.5em 0; font-size: 1.8rem; }
+.title-block .byline { font-size: 0.9rem; color: rgb(85, 85, 85); margin-bottom: 0.3em; }
+.title-block .author { font-size: 1.15rem; }
+
+#toc {
+    margin-top: 2em;
+    margin-bottom: 0;
+    padding-bottom: 2em;
+    border-bottom: 1px solid rgb(200, 200, 200);
+}
+
+#toc-heading { margin-top: 0; font-size: 1.2rem; color: rgb(51, 51, 51); }
+#toc ol, #toc ul { padding-left: 1.5em; margin: 0; font-family: Charter, Georgia, 'Times New Roman', serif; list-style: none; }
+#toc li { margin-bottom: 0.5em; }
+#toc a { font-family: Charter, Georgia, 'Times New Roman', serif; color: rgb(25, 25, 25); text-decoration: none; }
+#toc a:hover { color: rgb(26, 195, 255); text-decoration: underline; }
+#toc ul ul { margin-top: 0.3em; font-size: 0.9em; }
+#toc ul ul li { margin-bottom: 0.3em; }
+#toc ul ul ul { font-size: 1em; }
+
+.chapter {
+    padding-top: 2em;
+    padding-bottom: 2em;
+    border-bottom: 1px solid rgb(220, 220, 220);
+}
+
+.chapter:last-of-type { border-bottom: none; }
+.chapter h2:first-child { margin-top: 0; }
+
+.back-to-top {
+    display: block;
+    margin-top: 2em;
+    font-size: 0.75rem;
+    color: rgb(153, 153, 153);
+    text-decoration: none;
+}
+
+.back-to-top:hover { color: rgb(26, 195, 255); }
+
+/* ── screenplay layout ──────────────────────────────────────────────── */
+
+body.screenplay {
+    max-width: 6in;
+    line-height: 1.5;
+}
+
+body.screenplay h1 {
+    text-align: center;
+    text-transform: uppercase;
+    margin-bottom: 1.5em;
+}
+
+.scene-heading {
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+}
+
+.character {
+    margin-left: 2.2in;
+    margin-bottom: 0;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.dialogue {
+    margin-left: 1in;
+    margin-right: 1.5in;
+    margin-top: 0;
+    margin-bottom: 0.75em;
+}
+
+.parenthetical {
+    margin-left: 1.6in;
+    margin-right: 1.5in;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.character + .dialogue,
+.character + .parenthetical,
+.parenthetical + .dialogue,
+.dialogue + .parenthetical {
+    margin-top: 0;
+}
+
+.dialogue:has(+ .parenthetical),
+.character:has(+ .parenthetical),
+.parenthetical:has(+ .dialogue),
+.parenthetical:has(+ .parenthetical) {
+    margin-bottom: 0;
+}
+
+.action {
+    margin-top: 0;
+    margin-bottom: 0.75em;
+}
+
+.section-label {
+    text-align: center;
+    font-weight: bold;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    color: rgb(120, 120, 120);
+}
+
+body.screenplay hr.section-break {
+    margin: 2.5em 0 0.5em 0;
+}
+
+/* ── screenplay responsive: desktop ────────────────────────────────── */
+/* Position content 1.5" from page's left edge (standard screenplay margin).
+   All element offsets above are measured from body's content-box, which now
+   sits at 1.5" from page edge. */
+
+@media (min-width: 769px) {
+    body.screenplay {
+        max-width: 8.5in;
+        padding-left: 1.5in;
+        padding-right: 1in;
+    }
+}
+
+/* ── screenplay responsive: tablet ─────────────────────────────────── */
+
+@media (max-width: 768px) {
+    .dialogue {
+        margin-left: 0.75in;
+        margin-right: 1in;
+    }
+    .parenthetical {
+        margin-left: 1.2in;
+        margin-right: 1in;
+    }
+}
+
+/* ── screenplay responsive: mobile ─────────────────────────────────── */
+
+@media (max-width: 600px) {
+    body.screenplay {
+        max-width: 100%;
+    }
+    .character {
+        margin-left: 0;
+        text-align: center;
+        font-weight: bold;
+    }
+    .dialogue {
+        margin-left: 1em;
+        margin-right: 0;
+    }
+    .parenthetical {
+        margin-left: 2em;
+        margin-right: 0;
+        text-align: left;
+    }
+    /* Action gutters on phones = body's 1.5rem side padding; pull back
+       half of it so action reads at half the margin of everything else. */
+    .action {
+        margin-left: -0.75rem;
+        margin-right: -0.75rem;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    body { color: rgb(204, 204, 204); background: rgb(26, 26, 26); }
+    h1 { color: rgb(224, 224, 224); }
+    h2 { color: rgb(224, 224, 224); }
+    h3 { color: rgb(224, 224, 224); }
+    blockquote { border-left-color: rgb(102, 102, 102); color: rgb(170, 170, 170); }
+    a { color: rgb(204, 204, 204); }
+    code, pre { background: rgb(40, 40, 40); }
+    hr { border-top-color: rgb(102, 102, 102); }
+    th, td { border-color: rgb(102, 102, 102); }
+    th { background: rgb(40, 40, 40); }
+    .title-block { border-bottom-color: rgb(102, 102, 102); }
+    .title-block .byline { color: rgb(170, 170, 170); }
+    #toc { border-bottom-color: rgb(102, 102, 102); }
+    #toc-heading { color: rgb(224, 224, 224); }
+    #toc a { color: rgb(204, 204, 204); }
+    .chapter { border-bottom-color: rgb(51, 51, 51); }
+    .back-to-top { color: rgb(102, 102, 102); }
+    .section-label { color: rgb(153, 153, 153); }
+}
+    </style>
+</head>
+<body>
+<div class="title-block">
+  <h1>Puzzleworld: Player 1</h1>
+</div>
+<nav id="toc">
+  <h3 id="toc-heading">Contents</h3>
+  <ul>
+    <li><a href="#athena-and-the-last-player">Athena and the Last Player</a>
+    </li>
+    <li><a href="#i-puzzleworld-player-1-1-player">I — Puzzleworld: Player 1 (1 player)</a>
+    </li>
+    <li><a href="#ii-puzzleworld-2-player-2-players">II — Puzzleworld: 2-Player (2 players)</a>
+    </li>
+    <li><a href="#iii-puzzleworld-multiplayer-many-players">III — Puzzleworld: Multiplayer (many players)</a>
+    </li>
+    <li><a href="#the-secret-idea">The secret idea</a>
+    </li>
+    <li><a href="#important-the-book-came-to-him">Important: the book came to him</a>
+    </li>
+    <li><a href="#the-seeing-and-hiding-arc-planted-in-the-first-three-minutes">The seeing-and-hiding arc — planted in the first three minutes</a>
+    </li>
+    <li><a href="#the-bounce">The bounce</a>
+    </li>
+    <li><a href="#the-five-bedroom-doors">The five bedroom doors</a>
+      <ul>
+        <li><a href="#back-pocket-the-space-station">Back pocket: the Space Station</a>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#the-too-close-to-home-doors">The “too close to home” doors</a>
+    </li>
+    <li><a href="#hidden-progression-how-benjamin-finds-each-object">Hidden progression: how Benjamin finds each object</a>
+    </li>
+    <li><a href="#level-1-the-enchanted-forest">Level 1 — The Enchanted Forest</a>
+      <ul>
+        <li><a href="#the-umbrella">The umbrella</a>
+        </li>
+        <li><a href="#the-world">The world</a>
+        </li>
+        <li><a href="#the-puzzles">The puzzles</a>
+        </li>
+        <li><a href="#the-level-1-boss-fight-beat-by-beat">The Level 1 boss fight, beat by beat</a>
+        </li>
+        <li><a href="#the-manifesto">The manifesto</a>
+        </li>
+        <li><a href="#maybe-extension-the-secret-ending">Maybe-extension: the secret ending</a>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#level-2-the-dark-jungle">Level 2 — The Dark Jungle</a>
+      <ul>
+        <li><a href="#the-world-1">The world</a>
+        </li>
+        <li><a href="#the-glasses">The glasses</a>
+        </li>
+        <li><a href="#what-the-glasses-reveal">What the glasses reveal</a>
+        </li>
+        <li><a href="#the-shape-of-the-level">The shape of the level</a>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#level-3-the-wizard-contest">Level 3 — The Wizard Contest</a>
+      <ul>
+        <li><a href="#the-world-2">The world</a>
+        </li>
+        <li><a href="#the-move">The move</a>
+        </li>
+        <li><a href="#the-prize-and-this-is-huge">The prize — and this is huge</a>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#level-4-the-pirate-seas-new-2026-07-19">Level 4 — The Pirate Seas [NEW — 2026-07-19]</a>
+      <ul>
+        <li><a href="#the-seven-pearls">The seven pearls</a>
+        </li>
+        <li><a href="#the-ending-the-octopus">The ending — the octopus</a>
+        </li>
+        <li><a href="#the-mirror-one-object-two-jobs-opposite-jobs">The mirror — one object, two jobs, opposite jobs</a>
+        </li>
+        <li><a href="#design-notes-benjamins-calls-and-why-theyre-right">Design notes (Benjamin’s calls, and why they’re right)</a>
+        </li>
+        <li><a href="#open-items-new-2026-07-19">Open items [NEW — 2026-07-19]</a>
+        </li>
+        <li><a href="#reconciliation-flag-chest-mechanic-vs.-session-design">Reconciliation flag — chest mechanic vs. session design</a>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#the-weird-object-a-piece-of-chalk">The weird object: a piece of chalk</a>
+    </li>
+    <li><a href="#how-benjamin-finds-the-chalk">How Benjamin finds the chalk</a>
+    </li>
+    <li><a href="#the-doorway-is-a-jigsaw-puzzle">The doorway is a jigsaw puzzle</a>
+    </li>
+    <li><a href="#the-boss-is-the-maze">The boss is the maze</a>
+    </li>
+    <li><a href="#athena-the-first-secret-guardian">Athena — the first secret guardian</a>
+    </li>
+    <li><a href="#the-wizards-the-second-secret-guardian">The wizards — the second secret guardian</a>
+    </li>
+    <li><a href="#the-glitch">The Glitch</a>
+    </li>
+    <li><a href="#the-mini-glitch-one-per-level">The mini-Glitch — one per level</a>
+    </li>
+    <li><a href="#how-the-glitch-works-the-most-important-rule">How the Glitch works — the most important rule</a>
+    </li>
+    <li><a href="#how-the-puzzles-work">How the puzzles work</a>
+    </li>
+    <li><a href="#the-notes">The notes</a>
+    </li>
+  </ul>
+</nav>
+<div class="chapter">
+<h2 id="athena-and-the-last-player">Athena and the Last Player</h2>
+<p>A game by Benjamin and Dad — Part 1 of the Puzzleworld series</p>
+<p><strong>Document status.</strong> Extracted from the deck (last conform: 2026-05-23, Round 2) and updated with the 2026-07-19 design session (Pirate Seas, full level design; production/format notes). Sections new since the deck are marked <strong>[NEW — 2026-07-19]</strong>. The deck’s Round 2 conform note, preserved: L4 weird-object is CANON — a treasure chest at the foot of the bed; lesson is empathy (give instead of wield). L5 doorway is a literal jigsaw puzzle of the maze, on the bedroom rug, with one missing piece. The missing piece — earned in L4 as a reward for empathy — has chalk drawn on it, and is the key to fully entering L5. The chalk-the-object itself still lives on the floor of the maze (Athena’s “look down” beat preserved). Wizards key-art wired into L3.</p>
+<hr />
+<h1 id="i-what-the-game-is">I · What the game is</h1>
+<p>You’re a kid in your bedroom. One day, you find a secret way into another world — a place called Puzzleworld. Athena, your stuffed snowy owl, comes alive and flies with you. A bad guy called the Glitch is trying to take over every video game in the world, starting with Puzzleworld. You are the only one who can stop him.</p>
+<p>Every level is a different world. Every level gives you one weird object — an umbrella, a piece of chalk, something else — and you have to figure out what it can do to solve the puzzles and beat the boss.</p>
+<h1 id="ii-the-series">II · The series</h1>
+<p><em>Three games, one shape — the titles tell the story.</em></p>
+<p>The Glitch wanted every video game and one helpless player. The series beats him by doing the opposite — every game has more players than the last. The villain loses because he never understood that games can have friends in them.</p>
+  <a href="#toc" class="back-to-top">Back to top</a>
+</div>
+<div class="chapter">
+<h2 id="i-puzzleworld-player-1-1-player">I — Puzzleworld: Player 1 (1 player)</h2>
+<p>Benjamin alone. One player against the Glitch. The Glitch wins, sort of.</p>
+  <a href="#toc" class="back-to-top">Back to top</a>
+</div>
+<div class="chapter">
+<h2 id="ii-puzzleworld-2-player-2-players">II — Puzzleworld: 2-Player (2 players)</h2>
+<p>Mommy and Daddy go in to rescue Benjamin. The Glitch’s rule — there is only one player — breaks.</p>
+  <a href="#toc" class="back-to-top">Back to top</a>
+</div>
+<div class="chapter">
+<h2 id="iii-puzzleworld-multiplayer-many-players">III — Puzzleworld: Multiplayer (many players)</h2>
+<p>(or Co-Op.) The whole family, maybe more. The Glitch’s rule shatters. The world isn’t his anymore.</p>
+  <a href="#toc" class="back-to-top">Back to top</a>
+</div>
+<div class="chapter">
+<h2 id="the-secret-idea">The secret idea</h2>
+<p>The final boss assumes one player. The family breaks his logic by being too many. This is also how Stage 4 — the final form of the Glitch — eventually loses.</p>
+<h1 id="iii-the-opening">III · The opening</h1>
+<p><em>The wrong-door bounce on day one.</em></p>
+<p>The first time Benjamin plays the game, he’s in his bedroom. Alone. Athena is still a stuffed animal on the bed. Nothing has happened yet.</p>
+<p>He finds a book of spells on his bookshelf.</p>
+  <a href="#toc" class="back-to-top">Back to top</a>
+</div>
+<div class="chapter">
+<h2 id="important-the-book-came-to-him">Important: the book came to him</h2>
+<p>It wasn’t there yesterday — or it was, but he never noticed it, because it didn’t want to be noticed yet. This morning it does. Because the wizards in Puzzleworld have been waiting for Benjamin and guarding his spellbook for him, maybe his whole life, maybe longer. When he was ready, the book came home.</p>
+<p>(The opening doesn’t show the player any of that. Benjamin just finds the book and opens it. The full backstory unfolds across the game. But this is the canon now.)</p>
+<p>He opens it. The spellbook tells him: there are five objects in this room that are really doors. And at that moment, five objects in the bedroom start magically glittering — the bookshelf book, the closet, the wizard hat, the treasure chest at the foot of the bed, and a half-finished jigsaw puzzle on the rug.</p>
+<p>Benjamin gets to choose. He’s the one driving.</p>
+<p>He picks one — the jigsaw puzzle — and it turns out to be Level 5: Monsters in the Maze, which he’s not ready for. (The puzzle is missing a piece; his entry is partial, glimpsed not held.) He jumps in, sees something terrifying, and jumps back out. Scared.</p>
+<p>That’s when Athena wakes up. She’s not assigned to him by the game. She’s there because he went somewhere too big alone, and came back, and now he needs help. She becomes his guide because he needed one.</p>
+  <a href="#toc" class="back-to-top">Back to top</a>
+</div>
+<div class="chapter">
+<h2 id="the-seeing-and-hiding-arc-planted-in-the-first-three-minutes">The seeing-and-hiding arc — planted in the first three minutes</h2>
+<p>Across the game the player will slowly realize his bedroom has been full of Puzzleworld all along. Athena was hiding in plain sight as a stuffed owl. The spellbook was hiding in plain sight as a book on a shelf. The doors were always doors. His own life had a hidden layer.</p>
+<p>Glasses (L2) let Benjamin receive what’s hidden. The wizard hat (L3) lets him make things hidden. The arc pivots at L3 — Benjamin stops being a receiver of hidden things and becomes a maker of them.</p>
+  <a href="#toc" class="back-to-top">Back to top</a>
+</div>
+<div class="chapter">
+<h2 id="the-bounce">The bounce</h2>
+<p>Three escalating beats. No monster fully shown.</p>
+<ol type="1">
+<li><strong>Sound.</strong> Footsteps. Breathing. Something is in here with Benjamin.</li>
+<li><strong>Shape.</strong> A monster’s outline in the dark. Just enough that his brain fills in the rest.</li>
+<li><strong>Voice.</strong> Athena’s voice — from somewhere — scared, calling out: “Benjamin, come back!”</li>
+</ol>
+<p>Then he runs. By the time Athena calls out, the player doesn’t need to be told to run. Imagination does the work. The Minotauresque monsters are withheld until Benjamin returns with the chalk.</p>
+<p><strong>The crossover.</strong> Because Athena is still a stuffed animal on his bed during the bounce, her voice is reaching him in his imagination — but he’s already inside Puzzleworld. The two worlds are crossing over. His imagination reaches into the game and pulls him out.</p>
+<h1 id="iv-the-bedroom-hub">IV · The bedroom hub</h1>
+  <a href="#toc" class="back-to-top">Back to top</a>
+</div>
+<div class="chapter">
+<h2 id="the-five-bedroom-doors">The five bedroom doors</h2>
+<p>The bedroom hub. Five objects revealed by the spellbook on day one. After the opening, they unlock one at a time as Benjamin gets stronger. Once Benjamin beats a level, that door stays available forever — every door becomes a way back to a world he already knows.</p>
+<ol type="1">
+<li><strong>The fairy tale book</strong> (bookshelf) → Level 1 · the Enchanted Forest. Object: an umbrella. Lesson: one ordinary thing, many uses.</li>
+<li><strong>The closet</strong> (hanging clothes) → Level 2 · the Dark Jungle. Object: a pair of glasses. Lesson: see what already is.</li>
+<li><strong>The wizard hat</strong> (wall hook) → Level 3 · the Wizard Contest. Object: the hat itself — a power, not a thing. Lesson: the magic isn’t in the tool — it’s in the wearer.</li>
+<li><strong>The treasure chest</strong> (at the foot of the bed) → Level 4 · the Pirate Seas. Object: the chest itself — a way of being, not a tool. Lesson: empathy — give people what they need.</li>
+<li><strong>The jigsaw puzzle</strong> (on the rug) → Level 5 · Monsters in the Maze. Object: a piece of chalk. Lesson: make what isn’t there. (Chalk lives in the maze; the missing puzzle piece is the key to entry.)</li>
+</ol>
+<p>Levels 1–4 are adventure-scary; Level 5 is monster-scary.</p>
+<h3 id="back-pocket-the-space-station">Back pocket: the Space Station</h3>
+<p>Originally designed as Level 1 — a space station with no gravity, where everything floats, and the shoe puzzle solves a control panel that drops onto the boss. Currently paused. Lives on as a possible later world. Don’t lose it.</p>
+  <a href="#toc" class="back-to-top">Back to top</a>
+</div>
+<div class="chapter">
+<h2 id="the-too-close-to-home-doors">The “too close to home” doors</h2>
+<p>There are more than five levels. The next batch leads to places Benjamin already knows — his real life, turned into Puzzleworld. The family-wrong scary levels. They come after the Maze, because by then he’s ready for the worst thing the Glitch can do: copy the people he loves.</p>
+<ol start="6" type="1">
+<li><strong>The living room</strong> — a video game version of home.</li>
+<li><strong>The kitchen</strong> — your own kitchen acting wrong.</li>
+<li><strong>Daddy’s office</strong> — computer, cables, all of it.</li>
+<li><strong>Inside one of Benjamin’s comics</strong> — his own drawings, alive.</li>
+</ol>
+<p><strong>Build-order note.</strong> The four outside doors ship as PW1 v1. These four are PW1 v2 / DLC / future. Don’t scope them into v1.</p>
+<h1 id="v-the-adventure-levels">V · The Adventure Levels</h1>
+<p><em>Game 1 · four weird objects, three lessons in being a hero.</em></p>
+<p>Every weird object teaches a different lesson. The umbrella teaches that one ordinary thing has many uses. The glasses teach you to see what’s already there. The wizard hat teaches that the magic can live in the wearer, not the tool. The chalk teaches you to make what isn’t there.</p>
+  <a href="#toc" class="back-to-top">Back to top</a>
+</div>
+<div class="chapter">
+<h2 id="hidden-progression-how-benjamin-finds-each-object">Hidden progression: how Benjamin finds each object</h2>
+<p>Across the four weird-object levels, Benjamin learns that looking is itself part of being a hero.</p>
+<ul>
+<li><strong>Level 1 · Forest.</strong> The umbrella is handed to him — leaning against a tree in a beam of sunlight. The forest left it out for him.</li>
+<li><strong>Level 2 · Jungle.</strong> The glasses are hidden but findable. Benjamin has to search.</li>
+<li><strong>Level 4 · Pirate Seas.</strong> Nothing to hunt for. The treasure chest is the doorway and the object both — he carries it in. What he leaves with is a gift: the missing puzzle piece for L5, with chalk drawn on it.</li>
+<li><strong>Level 5 · Maze.</strong> The chalk is on the floor — it was there the first time too. He was too scared to see it. The second time, he’s brave enough to look.</li>
+</ul>
+<p>By the Maze, the act of looking is itself the trial. Don’t lose this progression.</p>
+  <a href="#toc" class="back-to-top">Back to top</a>
+</div>
+<div class="chapter">
+<h2 id="level-1-the-enchanted-forest">Level 1 — The Enchanted Forest</h2>
+<p><strong>Door:</strong> the fairy tale book on the bookshelf. <strong>Object:</strong> an umbrella. <strong>Lesson:</strong> one ordinary thing used cleverly can solve more than one problem.</p>
+<h3 id="the-umbrella">The umbrella</h3>
+<p>It’s the first thing Benjamin finds — sitting there in a beam of sunlight, leaning against a tree, like the forest left it out for him. Because this is Level 1, we don’t make the player hunt yet.</p>
+<ul>
+<li><strong>Parachute.</strong> Open and float down slowly, like Mary Poppins.</li>
+<li><strong>Shield.</strong> Open sideways to deflect things.</li>
+<li><strong>Stick.</strong> Closed, you can poke and reach.</li>
+<li><strong>Hook.</strong> The curved handle pulls things toward you or grabs things out of reach.</li>
+</ul>
+<h3 id="the-world">The world</h3>
+<p>A fairy-tale forest with a witch’s tower somewhere in it, and the witch’s herb garden somewhere else. Trees, paths, the usual Grimm Brothers vibes. The witch is the boss of the level, but she is not the Glitch. She’s a real Puzzleworld native — a fairy-tale witch doing fairy-tale-witch business in her own forest.</p>
+<p><strong>Worldview.</strong> Puzzleworld is a real place. It has its own witches, creatures, and rules that would be there even if the Glitch never existed. The Glitch is an invader — sneaking around the witch’s forest glitching things up, while she’s just trying to do her witch thing.</p>
+<h3 id="the-puzzles">The puzzles</h3>
+<ol type="1">
+<li><strong>Get the key.</strong> The key is stuck in the witch’s herb garden, guarded by something (TBD — magical plant? scarecrow? angry chicken? thorny roses?). Benjamin shields against thorns, hooks the key from outside the fence, or parachutes in from above.</li>
+<li><strong>Get into the tower.</strong> Use the key to unlock it. Climb up.</li>
+<li><strong>Survive the witch AND the cauldron-Glitch — at the same time, with one umbrella.</strong> The level’s climax. The thesis statement of the whole game. (See below.)</li>
+<li><strong>Escape from the top.</strong> Back to the window. Jump. Open the umbrella above his head. Float down while the witch screams behind him. Mary Poppins falling from a witch’s tower.</li>
+</ol>
+<p><strong>Mini-Glitch.</strong> He’s hiding in the witch’s cauldron, disguised as one of the bubbles on top of her potion. The witch herself doesn’t know he’s in there. He’s been hiding inside her own magic.</p>
+<h3 id="the-level-1-boss-fight-beat-by-beat">The Level 1 boss fight, beat by beat</h3>
+<p><em>The thesis statement of the entire game.</em></p>
+<ol type="1">
+<li>The witch sees Benjamin and starts throwing spells.</li>
+<li>The cauldron bubbles in the corner. The Glitch is hiding inside it — popping up between bubbles, glitching things in the room while the witch attacks. He’s not the main attacker. He’s making the room weird.</li>
+<li>The floor tilts. Benjamin slides across the room, scrambling. The witch keeps shooting.</li>
+<li>The witch’s hat falls over her eyes. She stumbles, swings wild. (The Glitch is glitching her without meaning to help Benjamin — he’s just glitching everything.)</li>
+<li>The umbrella turns into a fish. Benjamin is holding a fish. The witch is still throwing spells. He has nothing to block with. Three seconds later, it’s a chicken. Three seconds after, an umbrella again. He has to time what he does.</li>
+<li>The witch throws a fireball — it turns into a flower mid-air. Benjamin can’t predict her spells anymore because the Glitch is rewriting them on the way to him.</li>
+<li>Benjamin figures it out. He sees the cauldron. Sees the Glitch peeking out. Sees the witch winding up for another spell. He opens the umbrella sideways like a shield, lets her spell hit it, and angles the shield so the spell bounces straight into the cauldron.</li>
+<li>The cauldron erupts. The Glitch screams. The room un-tilts. The witch’s hat un-falls. The umbrella stays an umbrella. Everything that was wrong becomes right again — because the Glitch was the source of the wrongness, and now he’s gone. The witch looks confused. She didn’t even know he was there.</li>
+<li>With the witch still mad at him but the room normal again, Benjamin backs to the window, jumps, opens the umbrella, and floats down while she yells from the tower.</li>
+</ol>
+<h3 id="the-manifesto">The manifesto</h3>
+<ul>
+<li><strong>The Glitch makes the world wrong.</strong> The player feels what the Glitch does (tilt, hat, fish-umbrella, fireball-to-flower) before they understand who he is. Every rule of the level gets broken in this fight.</li>
+<li><strong>The witch isn’t the bad guy.</strong> Benjamin doesn’t beat her — he escapes her. The real villain was hiding in her stuff the whole time.</li>
+<li><strong>You don’t beat the bad guy by attacking him.</strong> Benjamin can’t reach the cauldron directly. The Glitch is killed by the witch’s own magic, redirected. Same lesson as the riddles (the family beats him by working together), the chalk (you make instead of fighting), and Stage 4 of the Glitch (you beat him by not playing the game his way). The villain is defeated by the world he was trying to corrupt.</li>
+<li><strong>One ordinary thing has many uses.</strong> The umbrella is shield AND reflector. Benjamin doesn’t attack with it. He deflects. That’s the whole Puzzleworld philosophy of being a hero, distilled into one move.</li>
+</ul>
+<p><strong>One line:</strong> the villain is defeated by the world he was trying to corrupt.</p>
+<h3 id="maybe-extension-the-secret-ending">Maybe-extension: the secret ending</h3>
+<p>Since the witch is a Puzzleworld native and the Glitch was an invader inside her cauldron, the level could have a secret ending. Basic win: deflect the spell, escape via parachute. Secret win: Benjamin signals to the witch during the fight that the Glitch is the real problem — she stops attacking, they handle the Glitch together, and Benjamin and the witch part as something close to friends. Not v1. Flag for later.</p>
+  <a href="#toc" class="back-to-top">Back to top</a>
+</div>
+<div class="chapter">
+<h2 id="level-2-the-dark-jungle">Level 2 — The Dark Jungle</h2>
+<p><strong>Door:</strong> the closet, behind the hanging clothes. <strong>Object:</strong> a pair of glasses. <strong>Lesson:</strong> see what already is.</p>
+<p><strong>The threshold.</strong> The hanging clothes in Benjamin’s real closet are the vines on the other side. Pushing through one is the same gesture as pushing through the other. The closet and the jungle touch at the threshold.</p>
+<h3 id="the-world-1">The world</h3>
+<p>Daytime, but the canopy is so thick it’s almost dark on the ground. Sunlight comes down in patches. The light is green-dim.</p>
+<p>No humans have ever been here. No paths, no ruins, no signs. Benjamin is the first.</p>
+<p>The jungle is alive. Huge flowers, glowing mushrooms, vines that move slowly. The world is paying attention to him.</p>
+<p>Things live here, but he only catches glimpses. Eyes in the dark. Shapes moving away. Never the whole creature. Until he puts the glasses on.</p>
+<p><strong>The Jungle is the opposite of the Maze.</strong> The Maze is built, dead, full of monsters that hunt toward Benjamin. The Jungle is wild, alive, full of creatures that hide from him. Both scary in opposite ways.</p>
+<h3 id="the-glasses">The glasses</h3>
+<p><strong>The glasses are the structural opposite of the chalk.</strong> Chalk: you make what isn’t there. Glasses: you see what already is. The chalk adds; the glasses reveal. The game is teaching the player that what you see, what you make, and what’s actually there are three different things.</p>
+<p>The glasses are a toggle. With them on, the secret world is visible. Take them off, and the jungle hides again. Benjamin plays the level by choosing when to see.</p>
+<h3 id="what-the-glasses-reveal">What the glasses reveal</h3>
+<ul>
+<li><strong>The eyes.</strong> The creatures watching him become visible. They’re not scary — just shy.</li>
+<li><strong>The paths.</strong> The jungle has secret trails the vines were hiding.</li>
+<li><strong>The vines.</strong> Moving in a pattern. They might be spelling something.</li>
+<li><strong>The flowers.</strong> Maybe they’re not flowers. Maybe they’re something else in disguise.</li>
+<li><strong>The Glitch.</strong> He was there the whole time, but he was invisible until the glasses went on.</li>
+</ul>
+<p><strong>Mini-Glitch.</strong> Something that doesn’t belong in a jungle at all. A computer screen flickering between the trees. A cloud of static where a flower should be. He’s trespassing. Nothing made of code has ever been in this place, and now there’s one of them.</p>
+<p><strong>Landmark.</strong> A cave hidden behind some vines. At the end of the wild jungle, a bit of Maze-like darkness creeps back in. A small structural foreshadow of Level 5.</p>
+<h3 id="the-shape-of-the-level">The shape of the level</h3>
+<ol type="1">
+<li>Enter the jungle through the closet/vines.</li>
+<li>Wander in the dim green light. Sense being watched. Don’t see anything yet.</li>
+<li>Find the glasses. (Where? On a vine? In a flower? Dropped by a creature? TBD.)</li>
+<li>Put them on. The world opens up.</li>
+<li>Find the locked door (invisible without glasses).</li>
+<li>Find the key (also hidden somehow).</li>
+<li>Open the door. The cave behind the vines.</li>
+<li>Inside the cave: the trespassing Glitch.</li>
+<li>Beat the puzzle. Bounce out.</li>
+</ol>
+  <a href="#toc" class="back-to-top">Back to top</a>
+</div>
+<div class="chapter">
+<h2 id="level-3-the-wizard-contest">Level 3 — The Wizard Contest</h2>
+<p><strong>Door:</strong> the wizard hat on its wall hook. <strong>Object:</strong> the hat itself — invisibility magic. A power, not a thing. <strong>Lesson:</strong> the magic isn’t always in the tool — sometimes it’s in the wearer.</p>
+<p><strong>Entry.</strong> Benjamin doesn’t walk through anywhere. He puts the hat on, and he transforms. He becomes a wizard. Wherever he goes next, he goes as someone with magic in him.</p>
+<p><strong>The seeing-and-hiding arc pivots here.</strong> In the Jungle, the world hides things from Benjamin and the glasses let him see them. In the wizard-hat world, Benjamin is the one who hides and reveals — same magic, opposite direction. Benjamin stops being a receiver of hidden things and becomes a maker of them.</p>
+<h3 id="the-world-2">The world</h3>
+<p>A huge stage. A cheering crowd. Wizards lined up to show off their best magic — adults, long beards, fancy robes, big flashy spells. Fireworks, transformations, floating things, the works. Then Benjamin steps up. A little kid. With one spell. Make things invisible. Make invisible things visible. That’s it. Everyone laughs. (They shouldn’t laugh.)</p>
+<h3 id="the-move">The move</h3>
+<p><strong>Benjamin doesn’t win the contest by winning the contest.</strong> He can’t out-flash adult wizards with one small spell. So instead he uses the magic to make himself invisible and sneak around while the contest goes on without him. He stops playing the game the contest wants him to play. Same logic as the chalk in the Maze, same logic as the riddles, same logic as Stage 4 of the Glitch.</p>
+<p><strong>One line:</strong> you beat the obstacle by refusing to engage with it on its terms.</p>
+<h3 id="the-prize-and-this-is-huge">The prize — and this is huge</h3>
+<p>An old spellbook, kept somewhere safe at the heart of the contest. The wizards are guarding it.</p>
+<p><strong>The reveal: the wizards are guarding Benjamin’s spellbook. The one from his bedroom.</strong></p>
+<p>This is the same book. Magically the same — one object existing in two places at once. The book in his bedroom is his book. It was made for him. The wizards have been protecting it, maybe for years, maybe his whole life, maybe longer. The contest is the cover story. The contest is the lock. The book is the prize. Only Benjamin can claim it, because it’s his.</p>
+<p>When he finally puts his hand on it — when he opens it in this world the way he opened it in his bedroom — the book recognizes him. It glows. It says his name. His magic in the contest world gets bigger the moment he touches it. The book and its wearer are reunited.</p>
+<p><strong>Mini-Glitch.</strong> TBD. The contest is full of magic; the Glitch could be glitching one of the wizards’ spells, hidden in the audience, disguised as a contestant, or hiding inside the spellbook itself (which would be especially sinister — the Glitch hiding in Benjamin’s own magic).</p>
+  <a href="#toc" class="back-to-top">Back to top</a>
+</div>
+<div class="chapter">
+<h2 id="level-4-the-pirate-seas-new-2026-07-19">Level 4 — The Pirate Seas <strong>[NEW — 2026-07-19]</strong></h2>
+<p><em>Designed in full with Benjamin, 2026-07-19. Not yet conformed into the deck.</em></p>
+<p><strong>Door and object:</strong> the treasure chest at the foot of the bed — the doorway and the object both. He carries it in. <strong>Lesson:</strong> empathy — give people what they need. <strong>Structure:</strong> seven lost pearls belonging to a clam, hunted in escalating order, then the octopus finale.</p>
+<h3 id="the-seven-pearls">The seven pearls</h3>
+<ol type="1">
+<li><strong>Pearl in an open shell on the sand.</strong> Easy.</li>
+<li><strong>Little fish playing ball with a pearl.</strong> Easy.</li>
+<li><strong>The shark, spotted from a distance</strong> — chewing a pearl like a jawbreaker. Benjamin decides he isn’t ready, and keeps swimming. This is the worry humming under the rest of the level.</li>
+<li><strong>The eel.</strong> An eel missing an eye, wearing the pearl in the socket to hide being ugly. You can’t just take it; he needs it. So Benjamin finds him an eyepatch in a sunken ship, and he stops feeling ugly and starts feeling like a pirate, and hands the pearl over happily. In his cave there’s also a mirror. Benjamin borrows it.</li>
+<li><strong>The shark.</strong> Benjamin goes back for him. Remembering the fable of the fox and the cheese, he holds up the mirror and waits. The shark sees “another shark” with a pearl, decides he wants that one too, swims at it full speed, and knocks himself out cold. Benjamin grabs the pearl, sets the mirror on the shark’s head to weigh him down, and speeds away.</li>
+<li><strong>The dolphin — the gift.</strong> She simply gives it back. She’s not hiding anything or holding it hostage — she found it deep down and was already bringing it to him. She’s the only creature in the level who just gives; every other pearl was worked for. On her way off she mentions, casually, that there’s something crying down there. Not a warning. Just telling him — which is somehow scarier than a warning.</li>
+<li><strong>The Crying Deep.</strong> There’s been a storm on the horizon the whole level. It isn’t weather. At the bottom of the trench is a baby kraken — bigger than the ship, completely alone, crying so hard it’s been making the storm the entire time. It’s afraid of an anglerfish swallowing it. But down there it’s pitch black, so all it’s ever seen is the light on the lure — never the fish. The biggest creature in the game has spent its life hiding from something the size of your hand. You can’t outsmart it or hand it an object. You need light. Benjamin swims back, retrieves the mirror off the shark’s head, takes it down into the dark, and catches the anglerfish’s own light and turns it around — and for one second everything is visible: a small fish with a silly light on a stick, blinking in confusion at itself. The kraken stares for a long moment. Then it laughs, and the sound shakes the water. The anglerfish gets startled and swims off with its little light bobbing away into the dark, which somehow makes it worse, and the kraken laughs harder. And that’s when the storm stops — not when it gets brave, when it laughs. Miles above, the clouds break and the sea goes flat and gold, and every creature Benjamin has met looks up at once. Then the kraken lets go of the pearl — gives it to him gently, in one tentacle, like it’s something precious. Because it is.</li>
+</ol>
+<h3 id="the-ending-the-octopus">The ending — the octopus</h3>
+<p>The kraken, not scared anymore, just remembering, mentions that somebody used to come down there and keep it company — an old octopus who lived in a cave. He stopped coming a long time ago, and it never found out why.</p>
+<p>Benjamin finds him: grumpy, yelling at everyone, his cave full of other people’s lost things. He wasn’t stealing to be bad. Collecting was the only way he didn’t feel alone. So instead of bringing him a thing, Benjamin brings him the creatures he took from — and they come and say hello. And that’s when he hands over the last treasure: the missing jigsaw piece, with chalk drawn on it. The key to Level 5. Home.</p>
+<h3 id="the-mirror-one-object-two-jobs-opposite-jobs">The mirror — one object, two jobs, opposite jobs</h3>
+<p>The mirror fooled the shark by showing him a fake, and saves the kraken by showing it something true. And the deep rhyme underneath: the eel used a pearl to hide his face, and the shark gets fooled by his own face in a mirror. Two creatures, two reflections.</p>
+<h3 id="design-notes-benjamins-calls-and-why-theyre-right">Design notes (Benjamin’s calls, and why they’re right)</h3>
+<ul>
+<li><strong>Kid-friendly difficulty curve.</strong> Benjamin made the eyepatch easy to find because “it would be too difficult for kids to have too many difficult puzzles and they’d get frustrated.”</li>
+<li><strong>The worry planted early.</strong> He set up the shark before the fight so there’d be a worry humming under the eel puzzle.</li>
+<li><strong>Chaining.</strong> The eel’s reward (the mirror) is built into the shark’s solution. The player never hunts for a solution — they get it as a reward for being kind.</li>
+<li><strong>Prior knowledge as power.</strong> Benjamin remembering the fox and the cheese — the player being smart because they read a story once.</li>
+<li><strong>Nobody gets hurt.</strong> The shark isn’t killed, or even really beaten — outsmarted, knocked silly, pinned under a mirror. And it’s funny.</li>
+<li><strong>The ending note.</strong> Not bravery. Not winning. A giant laughing in the dark, and the weather clearing everywhere at once.</li>
+</ul>
+<h3 id="open-items-new-2026-07-19">Open items <strong>[NEW — 2026-07-19]</strong></h3>
+<ul>
+<li>How Benjamin recovers the mirror from the now-awake shark (needed for the Crying Deep).</li>
+<li>Whether the baby kraken leaves the trench.</li>
+<li>Where the mini-Glitch hides in Pirate Seas. (Deck’s prior TBD options: a glitching lantern on the deck; a stowaway in the hold; rattling around inside the treasure chest itself — a fake “treasure” that’s actually him.)</li>
+<li>Pirate Seas art direction and music identity.</li>
+</ul>
+<h3 id="reconciliation-flag-chest-mechanic-vs.-session-design">Reconciliation flag — chest mechanic vs. session design</h3>
+<p>The deck’s Round 2 conform describes the chest as producing what each person in the pirate world needs, with Benjamin giving instead of wielding. The 2026-07-19 session design solves the level through found objects and acts (the eyepatch from the sunken ship, the borrowed mirror, bringing the creatures to the octopus) rather than chest-produced items. The empathy lesson is intact either way; the chest’s in-level mechanical role needs a decision when this conforms into the deck. Related: the deck says the missing piece is “given to him by the people of the Pirate Seas”; the session has the octopus handing over the last treasure. Compatible, but worth one sentence of canon.</p>
+<h1 id="vi-the-maze-level-5">VI · The Maze (Level 5)</h1>
+<p>The world is a dark maze. Benjamin can barely see. Around every corner there might be a monster.</p>
+<p>The monsters are hulking, massive, beasts. Nightmare-fuel. Minotauresque. The first time the player encounters a real one face-to-face is not on day one — that’s the payoff for coming back later, with the chalk in hand.</p>
+  <a href="#toc" class="back-to-top">Back to top</a>
+</div>
+<div class="chapter">
+<h2 id="the-weird-object-a-piece-of-chalk">The weird object: a piece of chalk</h2>
+<p>Like Harold and the Purple Crayon. The chalk doesn’t just mark things — it makes things. Draw light. Draw a door where there isn’t one. Draw a wall between you and a monster. Draw a path. Draw a fake Benjamin to distract them while you sneak past. Whatever Benjamin needs, he draws.</p>
+<p><strong>The chalk is the structural opposite of the Glitch.</strong> The Glitch breaks the world — deletes things, glitches walls out of existence. The chalk makes the world. Benjamin is an addition; the Glitch is a subtraction. The hero and the villain do opposite things at the level of physics.</p>
+<p>Most games hand the hero a sword. Puzzleworld hands him chalk. He’s not the kind of hero who fights — he’s the kind who imagines.</p>
+<p>The Maze’s notes for Mommy and Daddy are drawn in chalk on the walls. Same tool: survival AND trail-leaving in one. (In PW2, the chalk marks may be partly erased or warped by the Glitch — gaps in the rescue trail.)</p>
+  <a href="#toc" class="back-to-top">Back to top</a>
+</div>
+<div class="chapter">
+<h2 id="how-benjamin-finds-the-chalk">How Benjamin finds the chalk</h2>
+<p>The chalk isn’t given to Benjamin. It’s on the floor of the Maze. It was there the first time too — he was too scared to see it. The second time, he’s brave enough to look. Athena says “look down.”</p>
+<p><strong>Bravery isn’t fighting monsters. Bravery is being able to look around carefully.</strong></p>
+  <a href="#toc" class="back-to-top">Back to top</a>
+</div>
+<div class="chapter">
+<h2 id="the-doorway-is-a-jigsaw-puzzle">The doorway is a jigsaw puzzle</h2>
+<p>L5’s door is a literal jigsaw puzzle on the rug in Benjamin’s bedroom, depicting the maze itself. One piece is missing on day one — which is why his first attempt at L5 is only a partial entry. He glimpses the maze; the puzzle’s incompleteness throws him back. Athena calls him home.</p>
+<p>The missing piece is what Benjamin earns from L4 — given to him by the people of the Pirate Seas because he learned to give. The piece has chalk drawn on it. When he places it in the puzzle, the picture of the maze completes; the door becomes fully passable; Benjamin can enter L5 the way it’s meant to be entered.</p>
+<p>The chalk weird-object is still in the maze, on the floor. The puzzle piece is the key to the door, not the chalk itself. Two separate beats — entry, and bravery — both preserved.</p>
+  <a href="#toc" class="back-to-top">Back to top</a>
+</div>
+<div class="chapter">
+<h2 id="the-boss-is-the-maze">The boss is the maze</h2>
+<p>The boss of the Maze isn’t a creature. The maze itself is the boss. The walls move. Corridors close behind Benjamin. The maze is trying to trap him. He wins by out-imagining the maze itself — drawing a door where there shouldn’t be one, drawing a path through a wall. The maze doesn’t expect that.</p>
+<p>This is a kid-sized version of the final boss of the entire series (Stage 4 Glitch — the game itself). The chalk-and-Maze loop teaches the player the exact verb they’ll need three games later. Don’t simplify it past the point where this lesson survives.</p>
+<h1 id="vii-the-three-kinds-of-scary">VII · The three kinds of scary</h1>
+<p>Puzzleworld has three kinds of scary, and they belong in a specific order — the game’s emotional progression. The shape of the game is the shape of the kid learning to be brave.</p>
+<ol type="1">
+<li><strong>Adventure scary</strong> (Levels 1–4). Faraway worlds, puzzles, fun-scared. Fairy tales, wizards, jungles, pirate seas — places the spellbook opens up.</li>
+<li><strong>Monster scary</strong> (Level 5 · Monsters in the Maze). Dark, brave, hold-your-breath. The kind of scary where you have to be brave, not just clever. Tipped a kid-appropriate amount into horror.</li>
+<li><strong>Family-wrong scary</strong> (Levels 6–9 · the home doors). Close to home, the deepest kind. Bizarro Mommy and Daddy. Your own kitchen acting wrong.</li>
+</ol>
+<p>That’s why Benjamin bounces off Level 5 on day one. He’s not ready for monster-scary yet. He works through adventure-scary first with Athena. By the time he reaches the domestic levels, he’s ready for the deepest kind.</p>
+<h1 id="viii-bizarro-mommy-and-daddy">VIII · Bizarro Mommy and Daddy</h1>
+<p><em>The home-level mechanic.</em></p>
+<p>In the domestic levels, Benjamin encounters bizarro versions of Mommy and Daddy. Like Coraline. They look almost right. They sound almost right. They are not the real ones — they’re the Glitch’s versions. Benjamin has to reject them.</p>
+<p>The threat isn’t unfamiliar; it’s familiar-and-wrong. That’s why the home levels are scarier than the outside ones.</p>
+<p><strong>The mechanic.</strong> The rejection is the goal of the level, not a tool inside it. Confidence is the level’s resource. Every almost-right thing Benjamin notices, every test he runs, every wrong-hand or wrong-phrase he catches fills it up. When he’s certain, the line — “You’re not my mom.” / “You’re not my dad.” — becomes available. He says it. The bizarro one vanishes.</p>
+<p><strong>The bizarro one isn’t a boss at the end of a corridor.</strong> They’re the condition the level is in — almost-right and present the whole time. The fight isn’t with them. It’s with Benjamin’s own uncertainty. The level teaches him what knowing-for-sure feels like.</p>
+<p><strong>Athena is the readiness cue.</strong> She’s been with Benjamin gathering evidence. At some point she lands on his shoulder and says something like “You see it now, don’t you?” — and that’s when the line becomes available. Athena reads Benjamin because she knows him. The Glitch literally can’t tell when a kid is sure of something. Only people who love that kid can.</p>
+<p><strong>The weird object asks; Athena confirms.</strong> The level’s weird object isn’t what unlocks the line — Athena does. The object is what Benjamin uses to test the bizarro parent. A photograph only the real one would remember. A song fragment. A small ritual. The “true memory” is a tool for asking, not a key for unlocking.</p>
+<p><strong>No punishment.</strong> If Benjamin never becomes sure, the level doesn’t punish him. Athena steps in: “It’s okay. We can come back to this one.” The level pauses or resets. The game refuses to punish a kid for not being ready.</p>
+<h1 id="ix-the-canon">IX · The canon</h1>
+<p>The characters, mechanics, and rules of Puzzleworld — the things Benjamin invented.</p>
+  <a href="#toc" class="back-to-top">Back to top</a>
+</div>
+<div class="chapter">
+<h2 id="athena-the-first-secret-guardian">Athena — the first secret guardian</h2>
+<p>Athena is Benjamin’s stuffed snowy owl in real life. In the game, she sits on the bed. She has two states.</p>
+<ul>
+<li><strong>Real world.</strong> A stuffed owl. She talks to Benjamin in his imagination — only he can hear her. She’s been with him for a long time before the game starts; the friend nobody else knows about.</li>
+<li><strong>Puzzleworld.</strong> A real, talking owl — real feathers, real wings, voice out loud. Now everyone can hear her. The same Athena, finally visible to the world.</li>
+<li><strong>Back home.</strong> A stuffed animal again. The voice in his imagination returns, but they both know now.</li>
+</ul>
+<p><strong>WHY ANY OF THIS MATTERS.</strong> Puzzleworld is the place where imagination becomes real. Chalk drawings become real walls. Riddles in his head become post-its on walls. The voice in his imagination becomes a voice out loud. That’s what the whole game is about.</p>
+<p>This is also why Benjamin can spot bizarro Mommy and Daddy. He checks them against the real Mommy and Daddy who live in his imagination — the voices, memories, the people he carries around. You find out who’s real by knowing them well enough on the inside.</p>
+  <a href="#toc" class="back-to-top">Back to top</a>
+</div>
+<div class="chapter">
+<h2 id="the-wizards-the-second-secret-guardian">The wizards — the second secret guardian</h2>
+<p>The wizards are Puzzleworld natives who have been guarding Benjamin’s spellbook for him, maybe for years, maybe his whole life, maybe longer.</p>
+<p>They send the book to him when he’s ready. The opening of the game — Benjamin finding a spellbook on his shelf that wasn’t there yesterday — is the wizards making contact.</p>
+<ul>
+<li><strong>The contest is the cover story.</strong> The wizards have held it forever to disguise what they’re really doing: keeping Benjamin’s book safe.</li>
+<li><strong>The book recognizes him.</strong> When Benjamin touches it in the contest world, it glows. It says his name. His magic gets bigger.</li>
+<li><strong>They open the door in PW2.</strong> When the Glitch traps Benjamin, the book goes dark in their hands. Athena finds Mommy and Daddy in the real world; the wizards open the door from the other side.</li>
+</ul>
+<p><strong>THE SECOND GUARDIAN.</strong> Athena was hiding in plain sight as a stuffed owl. The spellbook was hiding in plain sight as a book on a shelf. Benjamin’s bedroom has been full of Puzzleworld all along.</p>
+  <a href="#toc" class="back-to-top">Back to top</a>
+</div>
+<div class="chapter">
+<h2 id="the-glitch">The Glitch</h2>
+<p>The big bad guy is a talking glitch that breaks the world.</p>
+<p>He’s scary because he doesn’t follow the rules. He can make walls disappear, swap a shoe for a fish in the middle of a level, turn Athena upside down. The only way to beat him is to be cleverer than the rules.</p>
+<p>His plan: take over every video game world. He knows the player is the only one who can stop him.</p>
+<p>The Glitch is an invader. Puzzleworld is a real place with its own witches, creatures, and rules. The Glitch doesn’t belong here — every level is a place that was there first, and he’s the wrong thing that snuck in.</p>
+  <a href="#toc" class="back-to-top">Back to top</a>
+</div>
+<div class="chapter">
+<h2 id="the-mini-glitch-one-per-level">The mini-Glitch — one per level</h2>
+<p>Each level has its own mini-Glitch — like the Big Glitch’s kid brother. A low-level bug in the code of Puzzleworld, hidden differently each time.</p>
+<p>He’s not really scary. He’s annoying and broken. He bumps into things. He says the wrong words. He might not even know he’s a bad guy — he’s just glitching around, getting in the way. Beating him might feel a tiny bit sad, because he’s not really a villain. He’s just broken.</p>
+<ul>
+<li><strong>Level 1 · Forest.</strong> Hiding in the witch’s cauldron, disguised as one of the bubbles. The witch doesn’t know he’s there.</li>
+<li><strong>Level 2 · Jungle.</strong> A trespasser. A computer screen flickering between the trees. Invisible until Benjamin puts the glasses on.</li>
+<li><strong>Level 3 · Contest.</strong> TBD. Maybe glitching a wizard’s spell. Maybe hiding inside the spellbook — inside Benjamin’s own magic.</li>
+<li><strong>Level 4 · Pirate Seas.</strong> TBD. Maybe a glitching lantern on the deck. Maybe a stowaway in the hold. Maybe rattling around inside the treasure chest itself — a fake “treasure” that’s actually him.</li>
+<li><strong>Level 5 · Maze.</strong> TBD.</li>
+</ul>
+  <a href="#toc" class="back-to-top">Back to top</a>
+</div>
+<div class="chapter">
+<h2 id="how-the-glitch-works-the-most-important-rule">How the Glitch works — the most important rule</h2>
+<p>Fighting the Glitch makes him stronger. Not because he gets mad. Because glitches cause glitches.</p>
+<p>When Benjamin beats a mini-Glitch, the act of beating him is itself a glitch in the code — and that glitch makes the Big Glitch duplicate.</p>
+<p>When Benjamin beats the Big Glitch at the end of Player 1, he only beats half of him. The other half is still out there. And that’s the half that traps Benjamin in Puzzleworld.</p>
+<p><strong>THE MOST IMPORTANT RULE.</strong> You can’t win by winning. Every time the family fights the Glitch, he gets worse. The puzzle of the whole series is figuring out how to beat something you can’t beat by fighting.</p>
+  <a href="#toc" class="back-to-top">Back to top</a>
+</div>
+<div class="chapter">
+<h2 id="how-the-puzzles-work">How the puzzles work</h2>
+<p>Every level, Benjamin starts with one weird object. The whole level is figuring out what it can do.</p>
+<ul>
+<li><strong>Level 1 · an umbrella.</strong> Parachute, shield, stick, hook. One ordinary thing, many uses.</li>
+<li><strong>Level 2 · a pair of glasses.</strong> See what’s already there but hidden. Toggleable — choose when to see.</li>
+<li><strong>Level 3 · the wizard hat.</strong> A power, not a thing. Make yourself invisible, or make invisible things visible.</li>
+<li><strong>Level 4 · a treasure chest.</strong> A way of being, not a tool. The chest produces what each person in the pirate world needs; Benjamin gives instead of wielding. Reward: the missing jigsaw piece, with chalk drawn on it. The key to L5. <em>(See L4 reconciliation flag above.)</em></li>
+<li><strong>Level 5 · a piece of chalk.</strong> Draw light, walls, doors, paths, decoys — whatever isn’t there. Make.</li>
+</ul>
+<p><strong>THE DUPLICATION BEAT · CLIMAX OF PW1.</strong> When Benjamin defeats the Big Glitch at the end of PW1, the screen glitches — music stutters, the picture goes wrong for a second — and the player sees, just for a moment, two Big Glitches in the corner of the screen before the level ends. The player knows something is wrong before Benjamin does.</p>
+<h1 id="x-how-the-glitch-grows">X · How the Glitch grows</h1>
+<p><em>Across the series — Player 1 only needs Stage 1.</em></p>
+<p>The Glitch evolves every time he’s fought. He doesn’t just get stronger — he changes form. What he is changes.</p>
+<ol type="1">
+<li><strong>Talking Static</strong> (Player 1 boss — BUILDING). The Glitch has a body. He talks. He’s scary but knowable. You can see him, hear him, fight him. You “defeat” him with a puzzle. He duplicates as a side effect.</li>
+<li><strong>Wrong Sounds</strong> (2-Player boss — FUTURE). The Glitch doesn’t have a body anymore. He’s a sound. Wrong music, wrong voices, words coming out of the wrong characters’ mouths. Mommy speaks in Daddy’s voice. Athena’s voice plays from a chair across the room. The puzzle of 2-Player might be: which sounds do you trust?</li>
+<li><strong>Wrong Behaviors</strong> (mid-game of Multiplayer — FUTURE). The Glitch isn’t a sound anymore. He is the behavior of the world. Enemies don’t act like enemies. Doors don’t open when you push them. Items do the wrong things. The puzzle: figure out what the world’s wrong rule is this time, and use it.</li>
+<li><strong>The Logic</strong> (final boss · Multiplayer — FUTURE). The Glitch isn’t anything you can see, hear, or touch. He is the game itself. The only way to beat him is to stop playing the game the way the game wants you to. Do something the game doesn’t have a button for. Break the rules of your own game. The only thing that can defeat the logic of a game is a player who refuses to follow it. The Glitch wanted to be alone with one helpless player. The family beats him by being too many. His logic assumes one player. Multiplayer breaks the logic. The Glitch loses because there are too many people in the room.</li>
+</ol>
+<h1 id="xi-puzzleworld-2-player">XI · Puzzleworld: 2-Player</h1>
+<p><em>The rescue.</em></p>
+<p>At the end of Player 1, Benjamin defeats the Big Glitch — but only half of him. The other half traps Benjamin in Puzzleworld.</p>
+<p>2-Player is a different game. Mommy and Daddy go in to rescue Benjamin. Two players, working together. The Glitch’s rule — there is only one player — breaks the moment they walk in.</p>
+<p><strong>Athena escapes.</strong> When the Big Glitch traps Benjamin, Athena gets out. She flies back to the bedroom and finds Mommy and Daddy. She’s the one who tells them what happened. She’s the bridge between Player 1 and 2-Player — the only one who saw it, the only one who can guide them in. She knows the worlds. She knew Benjamin in there. She’s grieving a little, and she’s furious at the Glitch. (Decided. Option B.)</p>
+<p><strong>The wizards open the door.</strong> The wizards have been guarding Benjamin’s spellbook his whole life. When the Glitch traps him, the book goes dark or screams or bursts into flame in their hands. They’re the ones who help Athena get Mommy and Daddy through. Athena finds them in the real world; the wizards open the door from the other side.</p>
+<p><strong>The worlds are collapsing.</strong> The worlds are falling apart because Benjamin, the only real player, is trapped inside. Without a player, the worlds can’t hold together. The rescue is urgent because the whole place is collapsing.</p>
+<p><strong>The Glitch is now Stage 2.</strong> Wrong sounds, wrong voices. Athena warns Mommy and Daddy: “Don’t defeat him. Whatever you do, don’t defeat him.” Figuring out what that means is the puzzle, because every game ever has trained the player to defeat the boss.</p>
+<p><strong>When the Glitch first appears.</strong> “There’s only supposed to be one player. There’s only ever supposed to be one player.” And Mommy and Daddy look at each other. Two against one. He doesn’t know how to fight two of us.</p>
+  <a href="#toc" class="back-to-top">Back to top</a>
+</div>
+<div class="chapter">
+<h2 id="the-notes">The notes</h2>
+<p>Throughout Player 1, Benjamin leaves things behind on every level — notes, sketches, marks — that helped him solve the puzzles. In 2-Player, Mommy and Daddy find them.</p>
+<p>Mommy and Daddy aren’t just playing a rescue. They’re following Benjamin’s trail. Every note is a piece of him — a little postcard from the kid they’re trying to save. They see each world through his eyes before they have to solve it themselves.</p>
+<p>Post-it notes, taped on the walls. (Written with the same chalk Benjamin used in the Maze. One tool, two jobs.)</p>
+<p><strong>The gaps.</strong> The Glitch has been breaking the worlds the whole time Benjamin’s been trapped. So when Mommy and Daddy arrive, the worlds have gaps in them. Pieces are missing. Pieces are wrong. Benjamin’s notes describe how the world used to work. But the world is broken now. Notes get them 70% there. The remaining 30% requires both of them. That’s where the two-player puzzles live.</p>
+<p><strong>The notes are riddles.</strong> The notes aren’t instructions. They’re riddles. Benjamin knew the Glitch was watching. He knew he might get trapped. So when he wrote notes to help himself, he wrote them in a way the Glitch wouldn’t understand. To the Glitch, they look like nonsense. To Mommy and Daddy, they make sense — because riddles are the kind of thing families solve together.</p>
+<p>This is the Glitch’s actual weakness, planted early. His whole rule is one player only. A riddle is a puzzle that wants more than one brain on it. He literally can’t solve a riddle written for two people who know each other. He doesn’t have anyone to think with. He’s alone.</p>
+<p>So the riddles aren’t just a clever rescue mechanic — they’re the seed of how the Glitch eventually loses. The thing that beats him in Multiplayer is being planted in Player 1, by a kid who was paying attention.</p>
+<p>In 2-Player, the Glitch may briefly be seen holding a post-it, reading the riddle out loud, getting it wrong. Funny and a little scary. He doesn’t even know what he’s missing.</p>
+<h1 id="xii-athenas-first-line">XII · Athena’s first line</h1>
+<p>The first thing Athena says when she becomes a real owl in Puzzleworld:</p>
+<p><strong>“Welcome to Puzzleworld.”</strong></p>
+<hr />
+<h1 id="appendix-production-status-new-2026-07-19">Appendix · Production status <strong>[NEW — 2026-07-19]</strong></h1>
+<p><em>From the 2026-07-19 session; not deck canon, but relevant to pulling the doc together.</em></p>
+<ul>
+<li><strong>Engine.</strong> The Paintings Engine — the data-driven, story-agnostic HTML5 still-image player built by Claude Code from SPEC.md. The engine consumes assets and never contains story; nodes (paintings) + states + hotspots + transitions.</li>
+<li><strong>Canvas resolution / aspect ratio — OPEN.</strong> The pixel-art track (May) landed on 480×270 internal on the 16:9 ladder; the paintings pivot may want higher-res painted plates instead. Sword &amp; Sworcery — the primary aesthetic anchor — was composed for a squarish/4:3 iPad frame, and Benjamin tests on an iPad, making 4:3 painted plates the stronger candidate. Decision open pending a test plate.</li>
+<li><strong>Pixel art vs. painterly — OPEN.</strong> Decides tool, export, and how animation frames are produced.</li>
+<li><strong>MVP node count — OPEN.</strong> The scene count for the first shareable slice was never answered; the acceptance test’s 5 stub nodes are a harness, not scope.</li>
+<li><strong>Benjamin on-screen or unseen — OPEN.</strong> MacVenture/Cosmic Osmo framing = unseen consciousness; the “Benjamin-in-the-painting” middle path (one figure drawing per node position) was proposed but not locked.</li>
+<li>A full media asset specification exists from the same session (base plates, layers, anims, audio beds, VO) and can be pulled forward once the four open decisions above are resolved.</li>
+</ul>
+  <a href="#toc" class="back-to-top">Back to top</a>
+</div>
+</body>
+</html>
